@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+*.log
+htmlcov/
+*.egg-info/
+.cache/
+.coverage
+.mypy_cache/
+env/
+.env
