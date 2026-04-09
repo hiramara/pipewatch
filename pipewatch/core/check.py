@@ -73,6 +73,16 @@ class Check:
         self.details = details
         self.executed_at = datetime.utcnow()
 
+    @property
+    def is_terminal(self) -> bool:
+        """Return True if the check has been executed and reached a terminal state.
+
+        A check is considered terminal when it has a definitive result
+        (PASS, FAIL, or WARNING), as opposed to SKIPPED which indicates
+        it has not yet run or was intentionally bypassed.
+        """
+        return self.status in (CheckStatus.PASS, CheckStatus.FAIL, CheckStatus.WARNING)
+
     def to_dict(self) -> Dict:
         """Convert check to dictionary representation."""
         return {
