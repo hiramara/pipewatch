@@ -76,6 +76,10 @@ class AlertManager:
         """Return every alert regardless of resolved status."""
         return list(self._alerts)
 
+    def alerts_by_level(self, level: AlertLevel) -> list[Alert]:
+        """Return all active alerts matching the given level."""
+        return [a for a in self.active_alerts() if a.level == level]
+
     def summary(self) -> dict:
         """Return a high-level count summary of alerts by level."""
         counts: dict[str, int] = {level.value: 0 for level in AlertLevel}
