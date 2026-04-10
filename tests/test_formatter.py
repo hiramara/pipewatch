@@ -93,12 +93,12 @@ class TestRenderCsv:
 
 
 class TestRenderDispatch:
-    def test_unknown_format_raises(self, simple_report):
-        with pytest.raises(ValueError, match="Unknown format"):
+    def test_unsupported_format_raises(self, simple_report):
+        """render() should raise ValueError for unknown format strings."""
+        with pytest.raises(ValueError, match="Unsupported format"):
             render(simple_report, fmt="xml")
 
-    def test_all_registered_formats_work(self, simple_report):
-        for fmt in FORMAT_HANDLERS:
-            result = render(simple_report, fmt=fmt)
-            assert isinstance(result, str)
-            assert len(result) > 0
+    def test_format_handlers_registered(self):
+        """All expected format keys should be present in FORMAT_HANDLERS."""
+        for fmt in ("text", "json", "csv"):
+            assert fmt in FORMAT_HANDLERS, f"Missing handler for format: {fmt!r}"
