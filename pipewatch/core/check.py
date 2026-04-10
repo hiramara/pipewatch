@@ -83,6 +83,17 @@ class Check:
         """
         return self.status in (CheckStatus.PASS, CheckStatus.FAIL, CheckStatus.WARNING)
 
+    def reset(self) -> None:
+        """Reset the check to its initial unevaluated state.
+
+        Clears the status, message, details, and execution timestamp so the
+        check can be re-executed cleanly (e.g. in a retry scenario).
+        """
+        self.status = CheckStatus.SKIPPED
+        self.message = ""
+        self.details = {}
+        self.executed_at = None
+
     def to_dict(self) -> Dict:
         """Convert check to dictionary representation."""
         return {
@@ -91,9 +102,3 @@ class Check:
             "description": self.description,
             "status": self.status.value,
             "executed_at": self.executed_at.isoformat() if self.executed_at else None,
-            "message": self.message,
-            "details": self.details,
-        }
-
-    def __repr__(self) -> str:
-        return f"Check(name='{self.name}', type='{self.check_type}', status={self.status.value})"
