@@ -56,8 +56,32 @@ class SnapshotManager:
         return latest.diff(previous)
 
     def all_snapshots(self) -> List[Snapshot]:
+        """Return all snapshots in chronological order."""
         return list(self._history)
+
+    def clear_history(self) -> None:
+        """Discard all stored snapshots, resetting history to empty."""
+        self._history.clear()
+
+    def health_trend(self, pipeline_id: str, n: int = 10) -> List[float]:
+        """Return the health scores for a pipeline across the last *n* snapshots.
+
+        Args:
+            pipeline_id: The pipeline whose trend to retrieve.
+            n: Maximum number of recent snapshots to include.
+
+        Returns:
+            A list of health scores in chronological order.  Snapshots that do
+            not contain the requested pipeline are skipped.
+        """
+        scores: List[float] = []
+        for snapshot in list(self._history)[-n:]:
+            ps = snapshot.get(pipeline_id)
+            if ps is not None:
+                scores.append(ps.health_score)
+        return scores
 
     @property
     def history_size(self) -> int:
+        """Number of snapshots currently stored in history."""
         return len(self._history)
