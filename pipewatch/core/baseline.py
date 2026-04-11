@@ -27,6 +27,15 @@ class BaselineMetric:
     def maximum(self) -> Optional[float]:
         return max(self.values) if self.values else None
 
+    @property
+    def stddev(self) -> Optional[float]:
+        """Return the population standard deviation of recorded values."""
+        if len(self.values) < 2:
+            return None
+        avg = self.average
+        variance = sum((v - avg) ** 2 for v in self.values) / len(self.values)
+        return variance ** 0.5
+
     def record(self, value: float) -> None:
         self.values.append(value)
         self.updated_at = datetime.utcnow()
@@ -37,6 +46,7 @@ class BaselineMetric:
             "average": self.average,
             "minimum": self.minimum,
             "maximum": self.maximum,
+            "stddev": self.stddev,
             "sample_count": len(self.values),
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }
