@@ -94,11 +94,19 @@ class Check:
         self.details = {}
         self.executed_at = None
 
-    def to_dict(self) -> Dict:
-        """Convert check to dictionary representation."""
+    def to_dict(self) -> Dict[str, Any]:
+        """Serialize the check to a dictionary.
+
+        Returns:
+            A dictionary representation of the check, suitable for logging
+            or serialization to JSON.
+        """
         return {
             "name": self.name,
             "check_type": self.check_type,
             "description": self.description,
             "status": self.status.value,
+            "message": self.message,
+            "details": self.details,
             "executed_at": self.executed_at.isoformat() if self.executed_at else None,
+        }
