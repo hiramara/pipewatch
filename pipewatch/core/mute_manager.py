@@ -58,7 +58,16 @@ class MuteManager:
         return len(expired)
 
     def all_rules(self) -> List[MuteRule]:
+        """Return all rules, both active and expired."""
         return list(self._rules.values())
+
+    def get_rule(self, pipeline_name: str) -> Optional[MuteRule]:
+        """Return the mute rule for *pipeline_name*, or None if no rule exists.
+
+        This does not check whether the rule is currently active; use
+        :meth:`is_muted` if you only care about active rules.
+        """
+        return self._rules.get(pipeline_name)
 
     def __len__(self) -> int:
         return len(self._rules)
