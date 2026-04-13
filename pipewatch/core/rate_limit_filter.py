@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import List
+from typing import Dict, List
 
 from pipewatch.core.alert import Alert
 from pipewatch.core.notifier import NotificationChannel
@@ -44,3 +44,14 @@ class RateLimitFilter:
         self._suppressed = [
             a for a in self._suppressed if a.pipeline_name != pipeline_name
         ]
+
+    def suppressed_by_pipeline(self) -> Dict[str, List[Alert]]:
+        """Return suppressed alerts grouped by pipeline name.
+
+        Returns a dict mapping each pipeline name to the list of alerts
+        that were suppressed for that pipeline.
+        """
+        result: Dict[str, List[Alert]] = {}
+        for alert in self._suppressed:
+            result.setdefault(alert.pipeline_name, []).append(alert)
+        return result
