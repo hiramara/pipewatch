@@ -21,6 +21,14 @@ class BaselineAlerter:
         self._tolerance = tolerance
         self._level = level
 
+    def _build_message(self, name: str, health_score: float, avg: float) -> str:
+        """Format a human-readable degradation message for a pipeline."""
+        return (
+            f"Pipeline '{name}' health score {health_score:.2f} "
+            f"is below baseline average {avg:.2f} "
+            f"(tolerance \u00b1{self._tolerance:.2f})"
+        )
+
     def check(self, report: Report) -> List[Alert]:
         """Return a list of alerts for pipelines that have degraded below baseline."""
         alerts: List[Alert] = []
@@ -29,11 +37,7 @@ class BaselineAlerter:
             if self._manager.is_degraded(name, summary.health_score, self._tolerance):
                 baseline = self._manager.get(name)
                 avg = baseline.get("health_score").average if baseline else None  # type: ignore[union-attr]
-                message = (
-                    f"Pipeline '{name}' health score {summary.health_score:.2f} "
-                    f"is below baseline average {avg:.2f} "
-                    f"(tolerance ±{self._tolerance:.2f})"
-                )
+                message = self._build_message(name, summary.health_score, avg)
                 alerts.append(
                     Alert(
                         pipeline=name,
