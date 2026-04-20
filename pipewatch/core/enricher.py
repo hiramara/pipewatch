@@ -61,3 +61,20 @@ class Enricher:
             if labels:
                 result[summary.pipeline.name] = labels
         return result
+
+    def enrich_summary(self, summary: PipelineSummary) -> Dict[str, str]:
+        """Return the labels that would be injected for a single pipeline summary.
+
+        Useful for inspecting enrichment results without constructing a full Report.
+
+        Args:
+            summary: The pipeline summary to evaluate against all rules.
+
+        Returns:
+            A dict of label_key -> label_value for each matching rule.
+        """
+        return {
+            rule.label_key: rule.label_value
+            for rule in self._rules
+            if rule.matches(summary)
+        }
